@@ -1,16 +1,25 @@
-clear all
-f = @(x)(1./(1+x.^2)); %función
-a = -2;
-b = 2;
-k = 5;
-h = ((b-a)/(k-1));%tamaño de paso
-xn = a+(0:(k-1))*h;
-yn = [f(xn)];
-x = (a-1):.0001:(b+1);
+%f = @(x)(1./(1+x.^2)); %función
+%a = -2;
+%b = 2;
+%k = 5;
+%h = ((b-a)/(k-1));%tamaño de paso
+%xn = a+(0:(k-1))*h;
+%yn = [f(xn)];
+xn=  [-2.00  -1.6300  -1.2600 -.8900  -.53  -.16 .21 .58 .95 1.32 1.68 2.05];
+yn= [3.5000 4.8700 5.4500 7.7600 7.4000 7.8600 8.7300 8.6700 10.3200 11.0000 10.7000 11.7800];
+a = min(xn);
+b = max(xn);
+[l,k] = size(yn);
+x = (a-3):.0001:(b+3);
 An = [];
 Ax = [];
-for i = 0:(k-1),An=[An; xn.^i];Ax=[Ax; x.^i];end
-An = An';Ax=Ax';C=inv(An)*yn'
+for i = 0:(k-1)
+    An=[An; xn.^i];
+    Ax=[Ax; x.^i];
+end
+An = An';
+Ax=Ax';
+C = inv(An)*yn'
 Px=Ax*C;
-plot(x,f(x),'b:',xn,yn,'go',x,Px,'r'); 
-axis([-3,3,0,2]);
+plot(xn,yn,'ro',x,Px,'b'); 
+axis([a-3,b+3,a-3,b+3]);
