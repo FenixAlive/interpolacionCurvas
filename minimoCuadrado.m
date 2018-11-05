@@ -32,30 +32,53 @@ clc
 %x =((a-1):.001:(b+1))';
 %y = f(x);
 %-------------------------------------------------------------
-xn=  [-2.00  -1.6300  -1.2600 -.8900  -.53  -.16 .21 .58 .95 1.32 1.68 2.05];
-yn= [3.5000 4.8700 5.4500 7.7600 7.4000 7.8600 8.7300 8.6700 10.3200 11.0000 10.7000 11.7800];
+xn= linspace(-2,15,13);
+yn= [663/399 2957/191 1459/81 4696/57 5897/20 67805/92 29887/20 82071/31 38551/9 97252/15 55991/6 167847/13 86537/5];
 xn = xn';
 yn = yn';
 [l,p] = size(yn);
 a = min(xn);
 b = max(xn);
+
+
+
+%racional
+% y = b / (1+ax) se convierte  y = b - a*x*y
+%Ar = [ones(1,p) ]
 %polinomio grado k
-k =12;
+k =1;
 A = [ones(l,p)];
 
-for i=1:l
+for i=1:k
   A =[A xn.^i];
 end
-A
+A;
 AB = [inv(A'*A)*(A'*yn)]
-%modelo exponencial
+%exponencial
+Ae = [inv(A'*A)*(A'*log(yn))]
+%
+
+%modelo polinomial
 %yest = AB(1)+AB(2)*xn+AB(3)*xn.^2+AB(i+1)*xn.^i;
 yest = AB(1);
+yexp = Ae(1);
 for i=1:(k)
   yest = yest+AB(i+1)*xn.^i;
+  yexp = yexp+Ae(i+1)*xn.^i;
 end
+% exponencial
+yexp=exp(yexp)
 
-plot(xn,yn,'ro', xn, yest, 'bo');
-axis([a-3,b+3,a-3,b+3]);
+plot(xn,yn,'ro', xn, yest, 'b', xn, yest, 'go');
+title("Polinomial")
+axis([a-3,b+3,min(yn)-3,max(yn)+3]);
+figure(2)
+plot(xn,yn,'ro', xn, yexp, 'b');
+title("Exponencial")
+axis([a-3,b+3,min(yn)-3,max(yn)+3]);
 % error cuadrado medio
+ECMn = mean((A*AB-yn).^2)
+ECMne = mean((A*AB-log(yn)).^2)
+Ec = norm(A*AB-yn)
 ECM = mean((yest-yn).^2)
+ECMe = mean((log(yexp)-log(yn)).^2)
